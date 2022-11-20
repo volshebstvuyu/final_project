@@ -47,10 +47,10 @@ def check_auth_failed(driver: webdriver, wait: WebDriverWait):
 
 
 def check_captcha_visibility(driver: webdriver, wait: WebDriverWait):
-    try:
-        wait.until(EC.visibility_of_element_located((By.ID, 'captcha')))
+    check = wait.until(EC.visibility_of_element_located((By.ID, 'captcha')))
+    if check != None:
         return True
-    except:
+    else:
         return False
 
 

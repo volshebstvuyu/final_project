@@ -4,15 +4,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+
 import time
 
 import consts
 
 def get_driver():
     try:
-        driver = webdriver.Firefox(executable_path = consts.driverPathMozilla)
+        options = Options()
+        options.set_preference('intl.accept_languages', 'en-GB')
+        driver = webdriver.Firefox(executable_path = consts.driverPathMozilla, options = options)
     except:
-        driver = webdriver.Chrome(executable_path = consts.driverPathChrome)
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en-GB'})
+        driver = webdriver.Chrome(executable_path = consts.driverPathChrome, chrome_options = options)
         
     driver.get(consts.baseUrl)
     driver.maximize_window()    

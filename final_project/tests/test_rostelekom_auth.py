@@ -29,26 +29,26 @@ def get_driver():
 
 def check_auth_failed(driver: webdriver, wait: WebDriverWait):
     driver.find_element(By.ID, ('kc-login')).click()
-    
+
     driver.implicitly_wait(40)
     forgetLink = driver.find_element(By.LINK_TEXT, 'Забыл пароль')
     classesOfforgetLink = forgetLink.get_attribute('class')
-    
+
     if check_captcha_visibility(driver, wait):
         title = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'p.card-container__error')))
         assert title.text == 'Неверно введен текст с картинки'
     else:
         title = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'p.card-container__error.login-form-container__error--bold')))
-        assert title.text != 'Неверный логин или пароль'
+        assert title.text == 'Неверный логин или пароль'
         assert classesOfforgetLink.__contains__('rt-link--orange')
-    
+
     time.sleep(3)
     driver.quit()
 
 
 def check_captcha_visibility(driver: webdriver, wait: WebDriverWait):
-    check = wait.until(EC.visibility_of_element_located((By.ID, 'captcha')))
-    if check != None:
+    check = driver.find_element(By.CSS_SELECTOR, 'img.rt-captcha__image')
+    if check is not None:
         return True
     else:
         return False
@@ -212,7 +212,7 @@ def test_try_auth_with_mail():
 
     wait.until(EC.presence_of_element_located((By.ID, 'oidc_mail'))).click()
 
-    wait.until(lambda driver_lambda: old_url != driver_lambda.current_url 
+    wait.until(lambda driver_lambda: old_url != driver_lambda.current_url
     and driver.execute_script("return document.readyState == 'complete'"))
 
     assert wait.until(EC.title_is(consts.mailLoginEn))
